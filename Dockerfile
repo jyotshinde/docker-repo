@@ -1,15 +1,14 @@
-#stage-1 --> Build Stage
-
 FROM node:25 AS builder
 WORKDIR /apps
-COPY docker-multi-stage-nodejs/package*.json /apps/
+
+COPY docker-multi-stage-nodejs/package*.json ./
 RUN npm install
-COPY . .
-RUN npm run build
+COPY docker-multi-stage-nodejs/ ./
 
-#stage-2 --> Prod Stage
-
+# Stage 2: Production
 FROM node:25-slim
 WORKDIR /apps
+
 COPY --from=builder /apps ./
+
 CMD ["npm", "start"]
